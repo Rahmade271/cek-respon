@@ -267,96 +267,96 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 }
 
 /* ===========================
-   FOOTER RESPONSIVE
+   FOOTER RESPONSIVE (FIXED)
    =========================== */
 
-/* Default layout: Mobile (stack vertikal) */
+/* 1. BASE LAYOUT (MOBILE FIRST) 
+   Default untuk semua layar kecil: Stack vertikal */
 .footer-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse; /* Navigasi (Next/Prev) di atas, Hint di bawah */
   gap: 1rem;
+  width: 100%;
 }
 
 .footer-navigation,
 .footer-secondary {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  width: 100%;
   gap: 0.75rem;
   justify-content: center;
+}
+
+/* Agar tombol di HP ukurannya rata & enak ditekan */
+.footer-navigation > button,
+.footer-secondary > button {
+  flex: 1; /* Tombol membesar memenuhi ruang baris */
 }
 
 /* Sembunyikan duplikat button by default */
-.main-action-mediumwidth {
-  display: none;
-}
-.main-action-fullwidth {
-  display: none;
-}
+.main-action-mediumwidth { display: none; }
+.main-action-fullwidth { display: none; }
 
-/* FULL WIDTH: SEMUA button dalam 1 baris horizontal */
-html[data-width="fullWidth"] .footer-actions {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: nowrap;
-}
 
-html[data-width="fullWidth"] .footer-secondary {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: nowrap;
-  order: 1;
-  justify-content: flex-start;
-}
+/* 2. TABLET & DESKTOP (min-width: 640px)
+   Di sini baru kita terapkan logika horizontal / fullWidth */
+@media (min-width: 640px) {
+  
+  /* Reset perilaku mobile (kembalikan ke ukuran normal button) */
+  .footer-navigation, 
+  .footer-secondary {
+    width: auto; /* Tidak lagi full width */
+  }
+  
+  .footer-navigation > button,
+  .footer-secondary > button {
+    flex: none; /* Ukuran tombol kembali mengikuti teks */
+  }
 
-html[data-width="fullWidth"] .footer-navigation {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: nowrap;
-  order: 2;
-  justify-content: flex-end;
-}
+  /* --- LOGIKA FULL WIDTH (Desktop) --- */
+  html[data-width="fullWidth"] .footer-actions {
+    flex-direction: row; /* Sejajar Horizontal */
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
 
-/* Show MainActionButton di pojok kanan untuk fullWidth */
-html[data-width="fullWidth"] .main-action-fullwidth {
-  display: block;
-}
-html[data-width="fullWidth"] .main-action-mediumwidth {
-  display: none;
-}
+  html[data-width="fullWidth"] .footer-secondary {
+    order: 1;
+    justify-content: flex-start;
+  }
 
-/* MEDIUM WIDTH: 2 baris layout */
-html[data-width="mediumWidth"] .footer-actions {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-areas:
-    "navigation"
-    "secondary";
-  gap: 1rem;
-}
+  html[data-width="fullWidth"] .footer-navigation {
+    order: 2;
+    justify-content: flex-end;
+  }
+  
+  /* Show MainAction di pojok kanan */
+  html[data-width="fullWidth"] .main-action-fullwidth { display: block; }
+  html[data-width="fullWidth"] .main-action-mediumwidth { display: none; }
 
-html[data-width="mediumWidth"] .footer-navigation {
-  grid-area: navigation;
-  display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-}
 
-html[data-width="mediumWidth"] .footer-secondary {
-  grid-area: secondary;
-  display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
+  /* --- LOGIKA MEDIUM WIDTH (Desktop) --- */
+  html[data-width="mediumWidth"] .footer-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "navigation"
+      "secondary";
+    gap: 1rem;
+  }
 
-/* Show MainActionButton di baris 2 untuk mediumWidth */
-html[data-width="mediumWidth"] .main-action-mediumwidth {
-  display: block;
-}
-html[data-width="mediumWidth"] .main-action-fullwidth {
-  display: none;
+  html[data-width="mediumWidth"] .footer-navigation {
+    grid-area: navigation;
+    justify-content: center;
+  }
+
+  html[data-width="mediumWidth"] .footer-secondary {
+    grid-area: secondary;
+    justify-content: center;
+  }
+
+  /* Show MainAction di baris 2 */
+  html[data-width="mediumWidth"] .main-action-mediumwidth { display: block; }
+  html[data-width="mediumWidth"] .main-action-fullwidth { display: none; }
 }
