@@ -15,7 +15,6 @@
   --text-light-primary: #364153;
   --text-light-secondary: #000000;
   --text-light-terniary: rgba(54, 65, 83, 0.5);
-
   --blue-light-secondary: #cee4ff;
   --green-light-primary: #f0fdf4;
   --red-light-primary: #fff1f2;
@@ -26,18 +25,14 @@
   --bg-dark-secondary: #1e2939;
   --text-dark-primary: #d1d5dc;
   --text-dark-secondary: #ffffff;
-
   --green-dark-primary: rgb(0 167 65 / 0.2);
   --red-dark-primary: rgb(255 91 106 / 0.2);
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
-
   --font-open-dyslexic: var(--font-sans);
 
   --text-xs: 0.75rem;
@@ -64,13 +59,10 @@ html {
 
   --blue-primary: var(--color-blue-primary);
   --blue-secondary: var(--blue-light-secondary);
-
   --green-primary: var(--color-green-primary);
   --green-secondary: var(--green-light-primary);
-
   --red-primary: var(--color-red-primary);
   --red-secondary: var(--red-light-primary);
-
   --yellow-primary: var(--color-yellow-primary);
   --yellow-secondary: var(--yellow-light-secondary);
   --hint-button-yellow: var(--color-hint-button-yellow);
@@ -92,18 +84,14 @@ html {
 html[data-theme="dark"] {
   --bg-primary: var(--bg-dark-primary);
   --bg-secondary: var(--bg-dark-secondary);
-
   --text-primary: var(--text-dark-primary);
   --text-secondary: var(--text-dark-secondary);
 
   --blue-secondary: var(--color-blue-primary);
-
   --green-primary: var(--color-green-primary);
   --green-secondary: var(--green-dark-primary);
-
   --red-primary: var(--color-red-primary);
   --red-secondary: var(--red-dark-primary);
-
   --yellow-secondary: var(--yellow-light-secondary);
 }
 
@@ -146,23 +134,27 @@ html[data-size="large"] {
   --font-mini: var(--text-sm);
 }
 
+/* === REVISI RESPONSIVE LAYOUT WIDTH === */
 html[data-width="mediumWidth"] {
-  --max-width-content: clamp(300px, 90vw, 500px);
-  --max-width-card: clamp(340px, 95vw, 600px); /*lebar maksimal card 600px*/
+  /* Menggunakan 0px sebagai batas bawah clamp agar responsif di layar <300px */
+  --max-width-content: clamp(0px, 90vw, 500px);
+  --max-width-card: clamp(0px, 95vw, 600px);
+
   --card-padding-mobile: 1rem;
   --card-padding-tablet: 1.5rem;
   --card-padding-desktop: 2rem;
 }
 
 html[data-width="fullWidth"] {
-  --max-width-content: clamp(320px, 92vw, 800px);
-  --max-width-card: clamp(360px, 95vw, 900px); /*lebar maksimal card 900px*/
+  /* Menggunakan 0px sebagai batas bawah clamp agar responsif di layar <320px */
+  --max-width-content: clamp(0px, 92vw, 800px);
+  --max-width-card: clamp(0px, 95vw, 900px);
+
   --card-padding-mobile: 1rem;
   --card-padding-tablet: 1.5rem;
   --card-padding-desktop: 2.5rem;
 }
 
-*,
 *::before,
 *::after {
   box-sizing: border-box;
@@ -205,6 +197,7 @@ body {
   font-size: var(--font-mini);
 }
 
+/* CARD STYLING */
 .lc-card {
   width: 100%;
   max-width: var(--max-width-card);
@@ -215,6 +208,14 @@ body {
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.45);
   border: 1px solid rgba(15, 23, 42, 0.4);
   padding: var(--card-padding-mobile);
+}
+
+/* SAFETY: Mencegah gambar/media keluar dari card */
+.lc-card img,
+.lc-card svg,
+.lc-card video {
+  max-width: 100%;
+  height: auto;
 }
 
 @media (min-width: 640px) {
@@ -234,10 +235,9 @@ body {
   overflow-wrap: break-word;
 }
 
-/* ===========================
+/* ========
    HEADER RESPONSIVE FOR MEDIUMWIDTH
-   =========================== */
-
+   ======== */
 html[data-width="mediumWidth"] .lc-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -267,7 +267,7 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 }
 
 /* ===========================
-   FOOTER RESPONSIVE FOR MEDIUMWIDTH
+   FOOTER RESPONSIVE
    =========================== */
 
 /* Default layout: Mobile (stack vertikal) */
@@ -290,7 +290,6 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 .main-action-mediumwidth {
   display: none;
 }
-
 .main-action-fullwidth {
   display: none;
 }
@@ -325,14 +324,11 @@ html[data-width="fullWidth"] .footer-navigation {
 html[data-width="fullWidth"] .main-action-fullwidth {
   display: block;
 }
-
 html[data-width="fullWidth"] .main-action-mediumwidth {
   display: none;
 }
 
-/* MEDIUM WIDTH: 2 baris layout
-   Baris 1: Sebelumnya & Selanjutnya
-   Baris 2: Petunjuk & Periksa/Ulang & Lihat Skor */
+/* MEDIUM WIDTH: 2 baris layout */
 html[data-width="mediumWidth"] .footer-actions {
   display: grid;
   grid-template-columns: 1fr;
@@ -361,7 +357,6 @@ html[data-width="mediumWidth"] .footer-secondary {
 html[data-width="mediumWidth"] .main-action-mediumwidth {
   display: block;
 }
-
 html[data-width="mediumWidth"] .main-action-fullwidth {
   display: none;
 }

@@ -10,13 +10,11 @@ export default function QuizResults({
   onExitToFirstQuestion,
 }) {
   const [showConfirmReset, setShowConfirmReset] = useState(false);
-
   const { total, score: percentage } = score || {
     correct: 0,
     total: 0,
     score: 0,
   };
-
   const isPassing = percentage >= 70;
 
   // Data lingkaran skor
@@ -31,24 +29,21 @@ export default function QuizResults({
   const titleColor = isDark
     ? "text-[var(--text-primary)]"
     : "text-[var(--blue-primary)]";
- const greenWrapper = isDark
-  ? "bg-[var(--green-secondary)] border border-[var(--green-primary)]"
-  : "bg-[var(--green-primary)] border border-[var(--green-secondary)]";
 
-const redWrapper = isDark
-  ? "bg-[var(--red-secondary)] border border-[var(--red-primary)]"
-  : "bg-[var(--red-primary)] border border-[var(--red-secondary)]";
+  const greenWrapper = isDark
+    ? "bg-[var(--green-secondary)] border border-[var(--green-primary)]"
+    : "bg-[var(--green-primary)] border border-[var(--green-secondary)]";
 
-
+  const redWrapper = isDark
+    ? "bg-[var(--red-secondary)] border border-[var(--red-primary)]"
+    : "bg-[var(--red-primary)] border border-[var(--red-secondary)]";
 
   // Handler konfirmasi ulang kuis
   const handleResetClick = () => setShowConfirmReset(true);
-
   const handleConfirmReset = () => {
     setShowConfirmReset(false);
     onReset();
   };
-
   const handleCancelReset = () => setShowConfirmReset(false);
 
   return (
@@ -59,14 +54,10 @@ const redWrapper = isDark
           flex items-center justify-center
           text-[var(--text-primary)]
           transition-colors duration-300
-          
-          
         "
       >
-        <div className="
-        w-[var(--max-width-card)]
-
-        ">
+        {/* UPDATE FIX: Wrapper diubah menjadi fluid dengan max-width */}
+        <div className="max-w-[var(--max-width-card)] w-full mx-auto px-4 sm:px-6">
           {/* HEADER */}
           <header
             className="
@@ -82,7 +73,6 @@ const redWrapper = isDark
               alt="LearnCheck Logo"
               className="w-14 h-14 sm:w-16 sm:h-16"
             />
-
             <div className="leading-tight">
               <h1 className={`font-subtitle font-bold ${titleColor}`}>
                 LearnCheck!
@@ -106,7 +96,7 @@ const redWrapper = isDark
             {/* Judul & deskripsi */}
             <div className="mb-8 sm:mb-10 text-center">
               <h1 className="font-title font-bold text-[var(--blue-primary)]">
-                Kuis Berhasil Diselesaikan! 
+                Kuis Berhasil Diselesaikan!
               </h1>
               <p className="font-body opacity-80 text-[var(--text-primary)]">
                 Tinjau hasil nilai Anda dan tingkatkan hasilnya di kuis berikutnya!
@@ -117,7 +107,7 @@ const redWrapper = isDark
             <div
               className="
                 p-5 sm:p-5 lg:p-8 rounded-2xl border-1 shadow-sm mb-8
-                bg-[var(--text-primary)]/3
+                bg-[var(--text-primary)]/5
                 border-[var(--text-primary)]/20
               "
             >
@@ -134,58 +124,56 @@ const redWrapper = isDark
                   </div>
                 </div>
 
-
                 {/* Score Circle */}
                 <div className="flex flex-col items-center text-center h-full">
                   <p className="font-heading font-semibold opacity-80 mb-2 sm:mb-2">
                     Skor Kamu
                   </p>
                   <div className="flex justify-center items-center flex-1">
-                  <div className="relative w-44 h-44 sm:w-56 sm:h-56">
-                    <svg
-                      className="transform -rotate-90 w-full h-full"
-                      viewBox="0 0 200 200"
-                    >
-                      {/* Lingkaran background */}
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r={radius}
-                        stroke="var(--text-primary)"
-                        strokeWidth="5"
-                        opacity="0.15"
-                        fill="none"
-                      />
-                      {/* Lingkaran skor */}
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r={radius}
-                        stroke={scoreColor}
-                        strokeWidth="5"
-                        fill="none"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
-                        strokeLinecap="round"
-                        className="transition-all duration-1000 ease-out"
-                      />
-                    </svg>
-
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span
-                        className={`
-                          text-5xl font-bold
-                          ${
-                            isPassing
-                              ? "text-[var(--green-primary)]"
-                              : "text-[var(--red-primary)]"
-                          }
-                        `}
+                    <div className="relative w-44 h-44 sm:w-56 sm:h-56">
+                      <svg
+                        className="transform -rotate-90 w-full h-full"
+                        viewBox="0 0 200 200"
                       >
-                        {percentage}%
-                      </span>
+                        {/* Lingkaran background */}
+                        <circle
+                          cx="100"
+                          cy="100"
+                          r={radius}
+                          stroke="var(--text-primary)"
+                          strokeWidth="5"
+                          opacity="0.15"
+                          fill="none"
+                        />
+                        {/* Lingkaran skor */}
+                        <circle
+                          cx="100"
+                          cy="100"
+                          r={radius}
+                          stroke={scoreColor}
+                          strokeWidth="5"
+                          fill="none"
+                          strokeDasharray={circumference}
+                          strokeDashoffset={strokeDashoffset}
+                          strokeLinecap="round"
+                          className="transition-all duration-1000 ease-out"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span
+                          className={`
+                            text-5xl font-bold
+                            ${
+                              isPassing
+                                ? "text-[var(--green-primary)]"
+                                : "text-[var(--red-primary)]"
+                            }
+                          `}
+                        >
+                          {percentage}%
+                        </span>
+                      </div>
                     </div>
-                  </div>
                   </div>
                 </div>
               </div>
@@ -205,7 +193,6 @@ const redWrapper = isDark
               >
                 Lihat Riwayat Kuis
               </button>
-
               <button
                 onClick={handleResetClick}
                 className={`
@@ -214,8 +201,7 @@ const redWrapper = isDark
                   hover:brightness-95 active:brightness-95
                   transition ${redWrapper}
                   text-[var(--white-primary)]
-                  `} 
-                  
+                `}
               >
                 Ulang Kuis
               </button>
