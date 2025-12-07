@@ -329,7 +329,6 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   margin-top: 0;
 }
 
-
 /* --- 2. LAYOUT DESKTOP & TABLET (Layar > 640px) --- */
 @media (min-width: 640px) {
 
@@ -350,10 +349,11 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
     flex: none; 
     width: auto;
     order: unset;
+    margin-top: 0;
   }
 
   /* =========================================
-     LOGIKA FULL WIDTH (1 Baris)
+     LOGIKA FULL WIDTH (Tampilan 1 Baris Penuh)
      ========================================= */
   html[data-width="fullWidth"] .footer-actions {
     flex-direction: row;
@@ -366,36 +366,46 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   html[data-width="fullWidth"] .footer-navigation {
     order: 2; justify-content: flex-end; align-items: center;
   }
-  /* Gunakan tombol yang ada di grup kanan (.footer-navigation) */
+  /* Gunakan tombol Action di grup Kanan */
   html[data-width="fullWidth"] .main-action-fullwidth { display: block !important; }
   html[data-width="fullWidth"] .main-action-mediumwidth { display: none; }
 
 
   /* =========================================
-     LOGIKA MEDIUM WIDTH (1 Baris Juga)
+     LOGIKA MEDIUM WIDTH (KHUSUS: SKOR TURUN KE BAWAH)
      ========================================= */
-  /* 1. Ubah display jadi Flex Row (Horizontal) */
   html[data-width="mediumWidth"] .footer-actions {
     display: flex; 
     flex-direction: row; 
-    align-items: center;
+    align-items: center; /* Center vertikal */
     justify-content: space-between;
   }
   
-  /* 2. Kiri: Petunjuk */
+  /* Sisi KIRI: Petunjuk & Skor */
   html[data-width="mediumWidth"] .footer-secondary {
     order: 1; 
     justify-content: flex-start;
+    /* FIX: Izinkan wrapping agar Skor bisa turun */
+    flex-wrap: wrap; 
+    max-width: 40%; /* Batasi lebar agar tidak menabrak Navigasi */
+  }
+
+  /* KHUSUS MEDIUM WIDTH: Paksa tombol Skor turun ke baris ke-2 */
+  html[data-width="mediumWidth"] .footer-secondary > button.btn-score {
+    flex: 1 1 100%; /* Lebar 100% dari container kirinya */
+    width: 100%;
+    order: 10;      /* Urutan terakhir */
+    margin-top: 0.5rem; /* Beri jarak sedikit dari tombol Petunjuk */
   }
   
-  /* 3. Kanan: Prev, Next, Action */
+  /* Sisi KANAN: Prev, Next, Action */
   html[data-width="mediumWidth"] .footer-navigation {
     order: 2; 
     justify-content: flex-end;
     align-items: center;
   }
 
-  /* 4. PENTING: Pakai tombol 'fullwidth' agar posisi di kanan, sembunyikan tombol mobile */
+  /* Gunakan tombol Action Desktop (di kanan) */
   html[data-width="mediumWidth"] .main-action-fullwidth { display: block !important; }
   html[data-width="mediumWidth"] .main-action-mediumwidth { display: none; }
 }
