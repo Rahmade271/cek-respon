@@ -309,7 +309,7 @@ export default function QuizContainer() {
   const secondaryBtn = `
     flex-1 sm:flex-none
     justify-center items-center
-    px-3 py-2 sm:px-3 sm:py-2 
+    px-3 py-2 sm:px-3 sm:py-2  
     rounded-lg font-medium 
     text-[11px] sm:text-xs
     border border-[var(--text-primary)] text-[var(--text-primary)]
@@ -348,6 +348,7 @@ export default function QuizContainer() {
     transition-all duration-200
     whitespace-nowrap
   `;
+  
   const isDark = userPrefs.theme === "dark";
   const logoSrc = isDark ? logoDark : logoLight;
   const titleColor = isDark

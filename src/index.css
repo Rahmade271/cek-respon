@@ -137,7 +137,7 @@ html[data-size="large"] {
 /* === REVISI RESPONSIVE LAYOUT WIDTH === */
 html[data-width="mediumWidth"] {
   /* Menggunakan 0px sebagai batas bawah clamp agar responsif di layar <300px */
-  --max-width-content: clamp(0px, 90vw, 5000px);
+  --max-width-content: clamp(0px, 90vw, 600px);
   --max-width-card: clamp(0px, 95vw, 600px);
 
   --card-padding-mobile: 1rem;
@@ -147,7 +147,7 @@ html[data-width="mediumWidth"] {
 
 html[data-width="fullWidth"] {
   /* Menggunakan 0px sebagai batas bawah clamp agar responsif di layar <320px */
-  --max-width-content: clamp(0px, 92vw, 8000px);
+  --max-width-content: clamp(0px, 92vw, 900px);
   --max-width-card: clamp(0px, 95vw, 900px);
 
   --card-padding-mobile: 1rem;
@@ -335,7 +335,7 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   .footer-actions {
     flex-direction: row;    
     align-items: center;    
-    gap: 0.5rem; /* Gap diperkecil agar muat */
+    gap: 0.5rem; 
   }
 
   .footer-navigation, 
@@ -363,48 +363,41 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 
 
   /* ============================================================
-     LOGIKA FULL WIDTH (Layout Standard: Kiri - Kanan)
+     LOGIKA MEDIUM WIDTH & FULL WIDTH (Layout Sama: Kiri - Kanan)
      ============================================================ */
-  html[data-width="fullWidth"] .footer-actions {
+  
+  /* 1. Container Utama: Space Between (Kiri mentok, Kanan mentok) */
+  html[data-width="fullWidth"] .footer-actions,
+  html[data-width="mediumWidth"] .footer-actions {
     justify-content: space-between;
+    flex-wrap: nowrap; /* Cegah turun baris */
   }
-  html[data-width="fullWidth"] .footer-secondary {
+
+  /* 2. Grup Kiri: Petunjuk (& Lihat Skor) */
+  html[data-width="fullWidth"] .footer-secondary,
+  html[data-width="mediumWidth"] .footer-secondary {
     justify-content: flex-start;
     order: 1; 
   }
-  html[data-width="fullWidth"] .footer-navigation {
+
+  /* 3. Grup Kanan: Navigasi (Prev, Next, Ulang) */
+  html[data-width="fullWidth"] .footer-navigation,
+  html[data-width="mediumWidth"] .footer-navigation {
     justify-content: flex-end;
     align-items: center;
     order: 2; 
   }
-  /* Tombol Utama: Pakai versi Desktop (Kanan) */
-  html[data-width="fullWidth"] .main-action-fullwidth { display: block !important; }
-  html[data-width="fullWidth"] .main-action-mediumwidth { display: none !important; }
 
-
-  /* ============================================================
-     LOGIKA MEDIUM WIDTH (Layout Compact: CENTER & WRAP)
-     ============================================================ */
-  /* Agar tidak nabrak, kita buat rata tengah dan boleh turun baris */
-  html[data-width="mediumWidth"] .footer-actions {
-    justify-content: center; 
-    flex-wrap: wrap; /* KUNCI: Izinkan turun baris jika sempit */
+  /* 4. TOMBOL UTAMA (Ulang/Periksa) */
+  /* Wajib pakai versi Desktop (yang posisinya ada di Kanan) */
+  html[data-width="fullWidth"] .main-action-fullwidth,
+  html[data-width="mediumWidth"] .main-action-fullwidth { 
+    display: block !important; 
   }
 
-  /* Grup Kiri (Petunjuk) Rata Tengah */
-  html[data-width="mediumWidth"] .footer-secondary {
-    justify-content: center;
-    order: 1; 
+  /* Sembunyikan tombol versi Mobile (yang posisinya ada di Kiri) */
+  html[data-width="fullWidth"] .main-action-mediumwidth,
+  html[data-width="mediumWidth"] .main-action-mediumwidth { 
+    display: none !important; 
   }
-
-  /* Grup Kanan (Navigasi) Rata Tengah */
-  html[data-width="mediumWidth"] .footer-navigation {
-    justify-content: center;
-    align-items: center;
-    order: 2; 
-  }
-
-  /* Tombol Utama: Pakai versi Desktop (agar satu grup dengan navigasi) */
-  html[data-width="mediumWidth"] .main-action-fullwidth { display: block !important; }
-  html[data-width="mediumWidth"] .main-action-mediumwidth { display: none !important; }
 }
