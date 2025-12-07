@@ -16,25 +16,6 @@ import hintLogoButton from "../images/hint-logo-button.png";
 import logoLight from "../images/logo-light-mode.png";
 import logoDark from "../images/logo-dark-mode.png";
 
-// ... import lainnya tetap sama
-import React, { useEffect, useState } from "react";
-import { useUrlParams } from "../hooks/useUrlParams";
-import useLocalStorage from "../hooks/useLocalStorage";
-import QuestionCard from "./QuestionCard";
-import QuizResults from "./QuizResults";
-import WelcomeScreen from "./WelcomeScreen";
-import { checkSingleQuestion, calculateScore } from "../utils/quizLogic";
-import {
-  fetchQuizDataAndPrefs,
-  generateHintAI,
-  resetSingleQuestion,
-  resetAllQuestions,
-} from "../services/backendApi";
-import { applyUserThemeToDocument } from "../utils/applyUserThemeToDocument";
-import hintLogoButton from "../images/hint-logo-button.png";
-import logoLight from "../images/logo-light-mode.png";
-import logoDark from "../images/logo-dark-mode.png";
-
 export default function QuizContainer() {
   // --- STATE & LOGIC TETAP SAMA ---
   const { userId, tutorialId } = useUrlParams() || {};
