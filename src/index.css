@@ -331,18 +331,23 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 /* --- 2. LAYOUT DESKTOP & TABLET (Layar > 640px) --- */
 @media (min-width: 640px) {
 
-  /* RESET GLOBAL: Matikan gaya mobile */
+  /* == RESET GLOBAL == */
+  /* Matikan semua gaya Mobile (vertical stack, width 100%, dll) */
   .footer-actions {
-    flex-direction: row; /* Kembali Horizontal */
-    align-items: center; /* Center Vertikal */
-    justify-content: space-between;
+    flex-direction: row;    /* Wajib Horizontal */
+    align-items: center;    /* Center vertikal */
+    justify-content: space-between; /* Kiri vs Kanan mentok */
   }
+
   .footer-navigation, 
   .footer-secondary {
     width: auto;
+    flex-wrap: nowrap;      /* Dilarang turun baris */
     gap: 0.75rem;
-    order: unset; 
+    order: unset;           /* Reset urutan */
   }
+
+  /* Reset semua ukuran tombol menjadi normal (ikut panjang teks) */
   .footer-navigation > button,
   .footer-secondary > button,
   .main-action-mediumwidth,
@@ -351,71 +356,41 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
     flex: none; 
     width: auto;
     min-width: auto;
-    order: unset;
     margin: 0;
+    order: unset;
   }
 
-  /* ========================================================
-     LOGIKA MEDIUM WIDTH (KHUSUS PERMINTAAN ANDA)
-     ======================================================== */
+  /* ============================================================
+     LOGIKA SATU BARIS UNTUK SEMUA (FullWidth & MediumWidth)
+     ============================================================ */
   
-  /* 1. Atur Container Utama */
-  html[data-width="mediumWidth"] .footer-actions {
+  /* 1. SISI KIRI: Grup Secondary (Petunjuk & Lihat Skor) */
+  html[data-width="fullWidth"] .footer-secondary,
+  html[data-width="mediumWidth"] .footer-secondary {
     display: flex;
-    flex-direction: row;
-    align-items: center; 
-    justify-content: space-between;
+    justify-content: flex-start;
+    order: 1; /* Pastikan di Kiri */
   }
 
-  /* 2. SISI KANAN: (Prev, Next, Ulang) WAJIB 1 BARIS */
+  /* 2. SISI KANAN: Grup Navigasi (Prev, Next, Tombol Utama) */
+  html[data-width="fullWidth"] .footer-navigation,
   html[data-width="mediumWidth"] .footer-navigation {
     display: flex;
-    flex-wrap: nowrap; /* DILARANG WRAP */
+    justify-content: flex-end;
     align-items: center;
-    order: 2; /* Pastikan di kanan */
+    order: 2; /* Pastikan di Kanan */
   }
-  
-  /* KUNCI: Munculkan tombol 'Ulang' (fullwidth) di dalam grup kanan */
+
+  /* 3. TOMBOL UTAMA (Ulang/Periksa): */
+  /* Selalu gunakan tombol versi Desktop (yang posisinya ada di Kanan) */
+  html[data-width="fullWidth"] .main-action-fullwidth,
   html[data-width="mediumWidth"] .main-action-fullwidth {
     display: block !important; 
   }
 
-
-  /* 3. SISI KIRI: (Petunjuk, Lihat Skor) BOLEH 2 BARIS */
-  html[data-width="mediumWidth"] .footer-secondary {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap; /* Izinkan tombol skor turun */
-    align-content: center;
-    justify-content: flex-start;
-    order: 1; /* Pastikan di kiri */
-    max-width: 45%; /* Batasi lebar agar tidak menabrak kanan */
-  }
-
-  /* KUNCI: Sembunyikan tombol 'Ulang' (mediumwidth) dari grup kiri agar tidak duplikat */
+  /* Sembunyikan tombol versi Mobile (yang posisinya ada di Kiri) */
+  html[data-width="fullWidth"] .main-action-mediumwidth,
   html[data-width="mediumWidth"] .main-action-mediumwidth {
     display: none !important; 
   }
-
-  /* KUNCI: Paksa tombol Skor turun ke baris bawah */
-  html[data-width="mediumWidth"] .footer-secondary > button.btn-score {
-    flex-basis: 100%; /* Lebar 100% container kiri */
-    margin-top: 0.5rem; /* Jarak dari tombol Petunjuk */
-  }
-
-
-  /* ========================================================
-     LOGIKA FULL WIDTH (1 Baris Lurus)
-     ======================================================== */
-  html[data-width="fullWidth"] .footer-secondary {
-    flex-wrap: nowrap; /* Jangan wrap */
-    justify-content: flex-start;
-    order: 1;
-  }
-  html[data-width="fullWidth"] .footer-navigation {
-    justify-content: flex-end;
-    order: 2;
-  }
-  html[data-width="fullWidth"] .main-action-fullwidth { display: block !important; }
-  html[data-width="fullWidth"] .main-action-mediumwidth { display: none; }
 }
