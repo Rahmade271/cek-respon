@@ -267,11 +267,11 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 }
 
 /* ===========================
-   FOOTER RESPONSIVE (FINAL MATCH MOCKUP)
+   FOOTER RESPONSIVE (FINAL MOCKUP MATCH)
    =========================== */
 
-/* --- 1. BASE LAYOUT (MOBILE / HP) --- */
-/* Tampilan: 3 Baris Vertikal (Navigasi di atas, Action di tengah, View Score di bawah) */
+/* --- 1. BASE LAYOUT (TAMPILAN MOBILE / HP) --- */
+/* Tetap seperti request sebelumnya: 3 Baris Vertikal Rapi */
 
 .footer-actions {
   display: flex;
@@ -280,7 +280,7 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   width: 100%;
 }
 
-/* GROUP 1: Navigasi (Prev/Next) - Posisi ATAS di Mobile */
+/* GROUP 1: Navigasi (Prev/Next) - Posisi PALING ATAS di Mobile */
 .footer-navigation {
   display: flex;
   order: 1; 
@@ -295,7 +295,7 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   text-overflow: ellipsis;
 }
 
-/* Hapus tombol Desktop di Mobile */
+/* Sembunyikan tombol Desktop di Mobile */
 .main-action-fullwidth {
   display: none !important; 
 }
@@ -306,11 +306,11 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   order: 2; 
   width: 100%;
   gap: 0.75rem;
-  flex-wrap: wrap; /* Izinkan wrapping untuk tombol Skor */
+  flex-wrap: wrap; 
 }
 
 .footer-secondary > button {
-  flex: 1; /* Tombol Hint & Action berbagi rata */
+  flex: 1; /* Hint & Action Mobile berbagi rata */
 }
 
 /* Tombol Action versi Mobile (Periksa/Ulang) */
@@ -322,10 +322,10 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   width: 100%; 
 }
 
-/* Tombol LIHAT SKOR (Mobile): Turun ke baris paling bawah */
+/* Tombol LIHAT SKOR (Mobile): Turun ke baris paling bawah & Full Width */
 .footer-secondary > button.btn-score {
-  flex: 1 1 100%; /* Lebar 100% */
-  order: 10;      /* Urutan visual terakhir */
+  flex: 1 1 100%; 
+  order: 10;      
   margin-top: 0;
 }
 
@@ -334,74 +334,63 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 @media (min-width: 640px) {
 
   /* == RESET GLOBAL DESKTOP == */
-  /* Kembalikan ukuran tombol menjadi normal (sesuai teks), bukan full width */
+  /* Matikan semua perilaku "melebar 100%" dari mobile */
+  .footer-navigation, 
+  .footer-secondary {
+    width: auto;
+    flex-wrap: nowrap; /* Cegah tombol turun ke bawah */
+    gap: 0.75rem;
+  }
+
   .footer-navigation > button,
   .footer-secondary > button,
   .main-action-mediumwidth,
   .main-action-mediumwidth > button,
   .footer-secondary > button.btn-score {
-    flex: none; 
+    flex: none; /* Ukuran tombol kembali normal sesuai teks */
     width: auto;
     order: unset; /* Reset urutan tombol skor */
   }
 
-  .footer-navigation, 
-  .footer-secondary {
-    width: auto;
-    gap: 1rem;
-    flex-wrap: nowrap; /* Cegah tombol turun ke bawah di desktop */
-  }
 
-
-  /* == LAYOUT FULL WIDTH (Sesuai Mockup "hint.png") == */
-  /* Target: Horizontal Bar. Kiri: Hint. Kanan: Prev, Next, Action. */
+  /* == LAYOUT FULL WIDTH (Sesuai Mockup hint.png) == */
+  /* Kiri: Petunjuk. Kanan: Prev, Next, Action. */
   
   html[data-width="fullWidth"] .footer-actions {
-    flex-direction: row; /* Baris Horizontal */
+    flex-direction: row; /* Wajib Baris Horizontal */
     align-items: center;
-    justify-content: space-between; /* Hint di Kiri, Nav di Kanan */
+    justify-content: space-between; /* Pisahkan Kiri dan Kanan mentok */
   }
 
-  /* Sisi KIRI: Berisi tombol Hint & Lihat Skor */
+  /* Sisi KIRI: Berisi tombol Hint (& Lihat Skor jika ada) */
   html[data-width="fullWidth"] .footer-secondary {
     order: 1; 
     justify-content: flex-start;
   }
 
-  /* Sisi KANAN: Berisi Prev, Next, & Main Action (Ulang/Periksa) */
+  /* Sisi KANAN: Berisi Prev, Next, & Main Action */
   html[data-width="fullWidth"] .footer-navigation {
     order: 2; 
     justify-content: flex-end;
     align-items: center;
   }
 
-  /* Di FullWidth: Gunakan tombol action khusus desktop yang ada di dalam .footer-navigation */
+  /* PENTING: Di Desktop, tombol 'Ulang/Periksa' (Biru) ada di dalam grup KANAN (.footer-navigation) */
   html[data-width="fullWidth"] .main-action-fullwidth { display: block !important; }
+  
+  /* Sembunyikan tombol 'Ulang/Periksa' versi mobile yang ada di grup kiri */
   html[data-width="fullWidth"] .main-action-mediumwidth { display: none; }
 
 
-  /* == LAYOUT MEDIUM WIDTH (Opsional: Tampilan Grid Kompak) == */
-  /* Jika user mengganti preferensi ke medium width */
+  /* == LAYOUT MEDIUM WIDTH (Opsional: Jika user pilih medium) == */
   html[data-width="mediumWidth"] .footer-actions {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-areas:
-      "navigation"
-      "secondary";
+    grid-template-areas: "navigation" "secondary";
     gap: 1rem;
   }
-  
-  html[data-width="mediumWidth"] .footer-navigation {
-    grid-area: navigation;
-    justify-content: center;
-  }
-  
-  html[data-width="mediumWidth"] .footer-secondary {
-    grid-area: secondary;
-    justify-content: center;
-  }
-
-  /* Di MediumWidth: Gunakan tombol action yang ada di .footer-secondary (baris 2) */
+  html[data-width="mediumWidth"] .footer-navigation { grid-area: navigation; justify-content: center; }
+  html[data-width="mediumWidth"] .footer-secondary { grid-area: secondary; justify-content: center; }
   html[data-width="mediumWidth"] .main-action-mediumwidth { display: block; }
   html[data-width="mediumWidth"] .main-action-fullwidth { display: none !important; }
 }
