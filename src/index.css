@@ -267,13 +267,15 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 }
 
 /* ===========================
-   FOOTER RESPONSIVE (FINAL PERFECT)
+   FOOTER RESPONSIVE (FINAL DESKTOP FIX)
    =========================== */
 
-/* 1. BASE LAYOUT (MOBILE DEFAULT) */
+/* --- 1. BASE LAYOUT (TAMPILAN MOBILE) --- */
+/* Default: Stack Vertikal, Tombol Lebar Penuh, Lihat Skor di Bawah */
+
 .footer-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Susun ke bawah */
   gap: 0.75rem;
   width: 100%;
 }
@@ -287,30 +289,27 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 }
 
 .footer-navigation > button {
-  flex: 1; 
+  flex: 1; /* Tombol berbagi rata 50:50 */
   white-space: nowrap; 
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Hapus tombol duplicate di Mobile */
+/* Hapus tombol duplicate (versi desktop) di Mobile */
 .main-action-fullwidth {
   display: none !important; 
 }
 
-
-/* GROUP 2: Secondary (Hint, Action, Score) - Posisi BAWAH */
+/* GROUP 2: Secondary (Hint, Action Mobile, View Score) - Posisi BAWAH */
 .footer-secondary {
   display: flex;
   order: 2; 
   width: 100%;
   gap: 0.75rem;
-  
-  /* FIX: Izinkan tombol turun ke bawah jika perlu (untuk Lihat Skor) */
-  flex-wrap: wrap; 
+  flex-wrap: wrap; /* Izinkan wrapping agar 'Lihat Skor' bisa turun */
 }
 
-/* Tombol Hint & Main Action berbagi tempat 50:50 */
+/* Tombol Hint & Main Action berbagi tempat */
 .footer-secondary > button {
   flex: 1;
 }
@@ -323,58 +322,70 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   width: 100%; 
 }
 
-/* FIX KHUSUS: Tombol LIHAT SKOR turun ke baris sendiri & full width */
+/* KHUSUS MOBILE: Tombol LIHAT SKOR turun ke baris sendiri & full width */
 .footer-secondary > button.btn-score {
-  flex: 1 1 100%; /* Grow 1, Shrink 1, Basis 100% (Full Width) */
-  order: 10;      /* Pastikan dia ditaruh paling akhir */
-  margin-top: 0;  /* Opsional */
+  flex: 1 1 100%; /* Force width 100% dan pindah baris baru */
+  order: 10;      /* Taruh paling bawah visualnya */
+  margin-top: 0;  
 }
 
 
-/* 2. TABLET & DESKTOP (Layar > 640px) */
+/* --- 2. LAYOUT DESKTOP & TABLET (Layar > 640px) --- */
+/* Di sini kita RESET semua perilaku mobile agar kembali normal */
 @media (min-width: 640px) {
   
-  /* Reset ukuran tombol */
+  /* Reset lebar container */
   .footer-navigation, 
   .footer-secondary {
     width: auto;
+    flex-wrap: nowrap; /* Jangan wrap di desktop */
   }
+
+  /* Reset perilaku tombol agar ukurannya sesuai teks (tidak 100%) */
   .footer-navigation > button,
   .footer-secondary > button,
   .main-action-mediumwidth {
     flex: none; 
+    width: auto;
   }
   .main-action-mediumwidth > button {
     width: auto;
   }
 
-  /* Reset perilaku tombol Lihat Skor di Desktop (supaya sejajar lagi) */
+  /* RESET TOTAL UNTUK TOMBOL 'LIHAT SKOR' DI DESKTOP */
+  /* Agar kembali sejajar satu baris, tidak turun ke bawah */
   .footer-secondary > button.btn-score {
     flex: none;
     width: auto;
-    order: unset;
+    order: unset; /* Hapus order 10 */
+    flex-basis: auto;
   }
 
-  /* --- LOGIKA FULL WIDTH --- */
+  /* === MODE FULL WIDTH (Sesuai Gambar "benar.png") === */
   html[data-width="fullWidth"] .footer-actions {
-    flex-direction: row;
+    flex-direction: row; /* Kembali Horizontal */
     align-items: center;
     justify-content: space-between;
   }
+  
+  /* Kiri: Hint & View Score */
   html[data-width="fullWidth"] .footer-secondary {
     order: 1; 
     justify-content: flex-start;
-    flex-wrap: nowrap; /* Jangan wrap di desktop fullwidth */
   }
+  
+  /* Kanan: Prev, Next, Action (Ulang/Check) */
   html[data-width="fullWidth"] .footer-navigation {
     order: 2; 
     justify-content: flex-end;
   }
+
+  /* Tampilkan tombol aksi desktop di sebelah kanan */
   html[data-width="fullWidth"] .main-action-fullwidth { display: block !important; }
   html[data-width="fullWidth"] .main-action-mediumwidth { display: none; }
 
 
-  /* --- LOGIKA MEDIUM WIDTH --- */
+  /* === MODE MEDIUM WIDTH (Layout 2 Baris Desktop) === */
   html[data-width="mediumWidth"] .footer-actions {
     display: grid;
     grid-template-columns: 1fr;
