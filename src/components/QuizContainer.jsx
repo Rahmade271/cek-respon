@@ -543,7 +543,7 @@ export default function QuizContainer() {
                 <button
                   onClick={handleShowHint}
                   className="
-                    w-full sm:w-auto px-3 py-2 sm:px-5 sm:py-2.5 
+                    w-full sm:w-auto py-2 sm:px-5 sm:py-2.5 
                     bg-[var(--hint-button-yellow)]
                     text-[var(--text-light-primary)] rounded-lg font-semibold
                     text-xs sm:font-mini
@@ -553,7 +553,7 @@ export default function QuizContainer() {
                   "
                   disabled={!currentQuestion.pre_hint || isLoading}
                 >
-                  <img src={hintLogoButton} alt="Hint Logo" className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <img src={hintLogoButton} alt="Hint Logo" className="w-3 h-4 sm:w-4 sm:h-4" />
                   <span>Petunjuk</span>
                 </button>
 

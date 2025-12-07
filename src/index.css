@@ -267,64 +267,89 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 }
 
 /* ===========================
-   FOOTER RESPONSIVE (FINAL FIXED)
+   FOOTER RESPONSIVE (FINAL - STRICT EQUAL WIDTH)
    =========================== */
 
 /* --- 1. BASE LAYOUT (MOBILE / HP) --- */
-/* Layout Vertikal: Navigasi, lalu Hint/Action, lalu Skor */
-
 .footer-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
   width: 100%;
+  align-items: center;
 }
 
-/* BARIS 1: Navigasi (Prev/Next) */
+/* === BARIS 1: Navigasi (Prev & Next) === */
 .footer-navigation {
   display: flex;
   order: 1; 
   width: 100%;
   gap: 0.5rem;
+  justify-content: center;
 }
+
+/* FIX: Paksa tombol Prev & Next berbagi lebar rata 50:50 */
 .footer-navigation > button {
-  flex: 1;
-  white-space: nowrap; /* Anti Text-Gepeng */
+  flex-grow: 1 !important;
+  flex-basis: 0 !important; /* KUNCI: Abaikan panjang teks */
+  width: 0 !important;      /* KUNCI: Reset width */
+  min-width: 0 !important;  
+  max-width: 100%;
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
 }
-/* Di Mobile, sembunyikan tombol Desktop */
+
+/* Sembunyikan tombol Desktop di Mobile */
 .main-action-fullwidth {
   display: none !important; 
 }
 
 
-/* BARIS 2: Hint & Action Mobile */
+/* === BARIS 2: Hint & Action Mobile (Petunjuk & Ulang) === */
 .footer-secondary {
   display: flex;
   order: 2; 
   width: 100%;
-  gap: 0.75rem;
-  flex-wrap: wrap; /* Wajib wrap agar skor bisa turun */
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap; 
 }
-.footer-secondary > button {
-  flex: 1;
-  white-space: nowrap;
-}
+
+/* FIX: Terapkan logika 50:50 pada anak langsung .footer-secondary */
+/* Ini menargetkan Tombol Petunjuk DAN Wrapper Tombol Ulang */
+.footer-secondary > button:not(.btn-score),
 .main-action-mediumwidth {
-  display: block; 
-  flex: 1;
+  flex-grow: 1 !important;
+  flex-basis: 0 !important; /* KUNCI: Abaikan panjang teks */
+  width: 0 !important;      /* KUNCI: Reset width */
+  min-width: 0 !important;
+  max-width: 100%;
 }
-.main-action-mediumwidth > button {
-  width: 100%;
+
+/* Styling Text pada Tombol Petunjuk */
+.footer-secondary > button:not(.btn-score) {
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Styling Tombol di dalam Wrapper (Tombol Ulang) */
+.main-action-mediumwidth > button {
+  width: 100% !important; /* Isi penuh wrapper 50% tadi */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 
-/* BARIS 3: Lihat Skor (Mobile Only) */
+/* === BARIS 3: Lihat Skor (Mobile Only) === */
 .footer-secondary > button.btn-score {
-  flex: 1 1 100%; /* Force width 100% */
-  width: 100%;
-  order: 99;      /* Paling bawah */
-  margin-top: 0;
+  flex: 1 1 100% !important; /* Full Width */
+  width: 100% !important;
+  order: 99;      
+  margin-top: 0.25rem; 
+  flex-basis: auto !important; /* Reset basis khusus tombol ini */
 }
 
 
@@ -346,41 +371,40 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
     order: unset;           
   }
 
-  /* Reset ukuran tombol jadi normal (ikut teks) */
+  /* Reset ukuran tombol jadi normal (ikut teks) di Desktop */
+  /* Kita matikan flex-grow dan flex-basis 0 yang dipakai di mobile */
   .footer-navigation > button,
   .footer-secondary > button,
   .footer-secondary > button:not(.btn-score),
   .main-action-mediumwidth,
   .main-action-mediumwidth > button,
   .footer-secondary > button.btn-score {
-    flex: none; 
-    width: auto;
-    min-width: auto;
-    max-width: none;
+    flex: none !important; 
+    flex-grow: 0 !important;
+    flex-basis: auto !important;
+    width: auto !important;
+    min-width: auto !important;
+    max-width: none !important;
     margin: 0;
     order: unset;
+    overflow: visible; 
   }
 
 
-  /* ============================================================
-     LOGIKA MEDIUM WIDTH & FULL WIDTH (Layout Sama: Kiri - Kanan)
-     ============================================================ */
+  /* == LOGIKA DESKTOP (Split Layout: Kiri - Kanan) == */
   
-  /* 1. Container Utama: Space Between (Kiri mentok, Kanan mentok) */
   html[data-width="fullWidth"] .footer-actions,
   html[data-width="mediumWidth"] .footer-actions {
     justify-content: space-between;
-    flex-wrap: nowrap; /* Cegah turun baris */
+    flex-wrap: nowrap; 
   }
 
-  /* 2. Grup Kiri: Petunjuk (& Lihat Skor) */
   html[data-width="fullWidth"] .footer-secondary,
   html[data-width="mediumWidth"] .footer-secondary {
     justify-content: flex-start;
     order: 1; 
   }
 
-  /* 3. Grup Kanan: Navigasi (Prev, Next, Ulang) */
   html[data-width="fullWidth"] .footer-navigation,
   html[data-width="mediumWidth"] .footer-navigation {
     justify-content: flex-end;
@@ -388,14 +412,13 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
     order: 2; 
   }
 
-  /* 4. TOMBOL UTAMA (Ulang/Periksa) */
-  /* Wajib pakai versi Desktop (yang posisinya ada di Kanan) */
+  /* Tombol Utama Desktop (Kanan) Aktif */
   html[data-width="fullWidth"] .main-action-fullwidth,
   html[data-width="mediumWidth"] .main-action-fullwidth { 
     display: block !important; 
   }
 
-  /* Sembunyikan tombol versi Mobile (yang posisinya ada di Kiri) */
+  /* Tombol Mobile (Kiri) Nonaktif */
   html[data-width="fullWidth"] .main-action-mediumwidth,
   html[data-width="mediumWidth"] .main-action-mediumwidth { 
     display: none !important; 
