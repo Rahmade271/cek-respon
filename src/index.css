@@ -267,76 +267,96 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 }
 
 /* ===========================
-   FOOTER RESPONSIVE (FIXED)
+   FOOTER RESPONSIVE (FIXED & POLISHED)
    =========================== */
 
-/* 1. BASE LAYOUT (MOBILE FIRST) 
-   Default untuk semua layar kecil: Stack vertikal */
+/* 1. BASE LAYOUT (MOBILE DEFAULT) 
+   Layout dasar untuk HP: Stack Vertikal, Tombol Lebar Penuh */
 .footer-actions {
   display: flex;
-  flex-direction: column-reverse; /* Navigasi (Next/Prev) di atas, Hint di bawah */
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem; /* Jarak antar baris */
   width: 100%;
 }
 
-.footer-navigation,
-.footer-secondary {
+/* GROUP 1: Navigasi (Sebelumnya/Selanjutnya) - Taruh di ATAS */
+.footer-navigation {
   display: flex;
+  order: 1; 
   width: 100%;
   gap: 0.75rem;
-  justify-content: center;
+}
+.footer-navigation > button {
+  flex: 1; /* Tombol membagi ruang 50:50 */
 }
 
-/* Agar tombol di HP ukurannya rata & enak ditekan */
-.footer-navigation > button,
-.footer-secondary > button {
-  flex: 1; /* Tombol membesar memenuhi ruang baris */
-}
-
-/* Sembunyikan duplikat button by default */
-.main-action-mediumwidth { display: none; }
+/* Sembunyikan tombol versi desktop di mobile */
 .main-action-fullwidth { display: none; }
 
 
-/* 2. TABLET & DESKTOP (min-width: 640px)
-   Di sini baru kita terapkan logika horizontal / fullWidth */
+/* GROUP 2: Secondary (Petunjuk & Tombol Utama/Periksa) - Taruh di BAWAH */
+.footer-secondary {
+  display: flex;
+  order: 2; 
+  width: 100%;
+  gap: 0.75rem;
+}
+
+/* Tombol Hint */
+.footer-secondary > button {
+  flex: 1;
+}
+
+/* Wrapper Tombol Utama (Periksa/Ulang) untuk Mobile/Medium */
+.main-action-mediumwidth {
+  display: block; /* PENTING: Jangan di-hide di mobile! */
+  flex: 1;
+}
+.main-action-mediumwidth > button {
+  width: 100%; /* Tombol mengisi penuh wrapper-nya */
+}
+
+
+/* 2. TABLET & DESKTOP (Layar > 640px) */
 @media (min-width: 640px) {
   
-  /* Reset perilaku mobile (kembalikan ke ukuran normal button) */
+  /* Reset ukuran tombol agar tidak terlalu lebar di layar besar */
   .footer-navigation, 
   .footer-secondary {
-    width: auto; /* Tidak lagi full width */
+    width: auto;
   }
-  
   .footer-navigation > button,
-  .footer-secondary > button {
-    flex: none; /* Ukuran tombol kembali mengikuti teks */
+  .footer-secondary > button,
+  .main-action-mediumwidth {
+    flex: none; /* Ukuran mengikuti konten teks */
+  }
+  .main-action-mediumwidth > button {
+    width: auto;
   }
 
-  /* --- LOGIKA FULL WIDTH (Desktop) --- */
+  /* --- LOGIKA FULL WIDTH (Layout Horizontal Panjang) --- */
   html[data-width="fullWidth"] .footer-actions {
-    flex-direction: row; /* Sejajar Horizontal */
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: nowrap;
-  }
-
-  html[data-width="fullWidth"] .footer-secondary {
-    order: 1;
-    justify-content: flex-start;
-  }
-
-  html[data-width="fullWidth"] .footer-navigation {
-    order: 2;
-    justify-content: flex-end;
   }
   
-  /* Show MainAction di pojok kanan */
+  html[data-width="fullWidth"] .footer-secondary {
+    order: 1; /* Kiri: Hint */
+    justify-content: flex-start;
+  }
+  
+  html[data-width="fullWidth"] .footer-navigation {
+    order: 2; /* Kanan: Navigasi & Action */
+    justify-content: flex-end;
+  }
+
+  /* Switch tombol utama ke versi fullwidth */
   html[data-width="fullWidth"] .main-action-fullwidth { display: block; }
   html[data-width="fullWidth"] .main-action-mediumwidth { display: none; }
 
 
-  /* --- LOGIKA MEDIUM WIDTH (Desktop) --- */
+  /* --- LOGIKA MEDIUM WIDTH (Layout 2 Baris Desktop) --- */
   html[data-width="mediumWidth"] .footer-actions {
     display: grid;
     grid-template-columns: 1fr;
@@ -356,7 +376,7 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
     justify-content: center;
   }
 
-  /* Show MainAction di baris 2 */
+  /* Switch tombol utama ke versi mediumwidth */
   html[data-width="mediumWidth"] .main-action-mediumwidth { display: block; }
   html[data-width="mediumWidth"] .main-action-fullwidth { display: none; }
 }
