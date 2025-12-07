@@ -137,7 +137,7 @@ html[data-size="large"] {
 /* === REVISI RESPONSIVE LAYOUT WIDTH === */
 html[data-width="mediumWidth"] {
   /* Menggunakan 0px sebagai batas bawah clamp agar responsif di layar <300px */
-  --max-width-content: clamp(0px, 90vw, 500px);
+  --max-width-content: clamp(0px, 90vw, 5000px);
   --max-width-card: clamp(0px, 95vw, 600px);
 
   --card-padding-mobile: 1rem;
