@@ -548,15 +548,20 @@ export default function QuizContainer() {
                 </button>
 
                 <div className="main-action-mediumwidth">{MainActionButton}</div>
-
+                
                 {isLastQuestion && isAllQuestionsChecked && (
-                  <button onClick={handleViewScore} className={primaryBtn} disabled={isLoading}>
+                  <button
+                    onClick={handleViewScore}
+                    // TAMBAHKAN class "btn-score" DI SINI [diubah disini]
+                    className={`${primaryBtn} btn-score`} 
+                    disabled={isLoading}
+                  >
                     Lihat Skor
                   </button>
                 )}
               </div>
 
-              {/* RIGHT - NAVIGATION BUTTONS */}
+              {/* RIGHT: Navigation - Button Navigasi Kecil */}
               <div className="footer-navigation">
                 <button
                   onClick={handlePrev}
