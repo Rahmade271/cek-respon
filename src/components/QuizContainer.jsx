@@ -16,14 +16,32 @@ import hintLogoButton from "../images/hint-logo-button.png";
 import logoLight from "../images/logo-light-mode.png";
 import logoDark from "../images/logo-dark-mode.png";
 
+// ... import lainnya tetap sama
+import React, { useEffect, useState } from "react";
+import { useUrlParams } from "../hooks/useUrlParams";
+import useLocalStorage from "../hooks/useLocalStorage";
+import QuestionCard from "./QuestionCard";
+import QuizResults from "./QuizResults";
+import WelcomeScreen from "./WelcomeScreen";
+import { checkSingleQuestion, calculateScore } from "../utils/quizLogic";
+import {
+  fetchQuizDataAndPrefs,
+  generateHintAI,
+  resetSingleQuestion,
+  resetAllQuestions,
+} from "../services/backendApi";
+import { applyUserThemeToDocument } from "../utils/applyUserThemeToDocument";
+import hintLogoButton from "../images/hint-logo-button.png";
+import logoLight from "../images/logo-light-mode.png";
+import logoDark from "../images/logo-dark-mode.png";
+
 export default function QuizContainer() {
+  // --- STATE & LOGIC TETAP SAMA ---
   const { userId, tutorialId } = useUrlParams() || {};
   const storageKey = `LEARNCHECK_STATE_${userId}_${tutorialId}`;
-
   const [quizState, setQuizState] = useLocalStorage(storageKey, null);
   const [userPrefs, setUserPrefs] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isHintVisible, setIsHintVisible] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -32,8 +50,8 @@ export default function QuizContainer() {
   const totalQuestions = quizState?.questions?.length || 0;
   const currentQuestion = quizState?.questions?.[currentQuestionIndex];
   const currentQuestionId = currentQuestion?.id;
-  const isCompleted = quizState?.isCompleted || false;
 
+  const isCompleted = quizState?.isCompleted || false;
   const isFirstQuestion = currentQuestionIndex === 0;
   const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
 
@@ -41,12 +59,15 @@ export default function QuizContainer() {
     quizState?.checkedStatus?.[currentQuestionId]?.submitted || false;
   const isCurrentQuestionCorrect =
     quizState?.checkedStatus?.[currentQuestionId]?.isCorrect || false;
+
   const isCurrentQuestionAnswered =
     (quizState?.answers?.[currentQuestionId]?.length || 0) > 0;
+
   const isAllQuestionsChecked =
     totalQuestions > 0 &&
     Object.keys(quizState?.checkedStatus || {}).length === totalQuestions;
 
+  // --- withLoading tetap sama ---
   const withLoading =
     (handler, delay = 500) =>
     async (...args) => {
@@ -62,10 +83,12 @@ export default function QuizContainer() {
       }
     };
 
+  // --- loadQuizData tetap sama ---
   const loadQuizData = async () => {
     setIsLoading(true);
     try {
       const data = await fetchQuizDataAndPrefs(tutorialId, userId);
+
       setQuizState({
         questions: data.questions,
         userId,
@@ -79,6 +102,7 @@ export default function QuizContainer() {
         score: 0,
         userPreferences: data.userPreferences,
       });
+
       setUserPrefs(data.userPreferences || {});
     } catch (err) {
       console.error("Gagal memuat data kuis:", err);
@@ -88,7 +112,7 @@ export default function QuizContainer() {
     }
   };
 
-  // Reset state dasar ketika user berganti
+  // --- effect tetap sama ---
   useEffect(() => {
     setIsWelcomeScreen(true);
     setCurrentQuestionIndex(0);
@@ -96,31 +120,31 @@ export default function QuizContainer() {
     setIsHintVisible(false);
   }, [userId]);
 
-  // Inisialisasi quizState dari localStorage/backend
   useEffect(() => {
     const isStateValid =
       quizState && quizState.questions && quizState.questions.length > 0;
+
     if (!isStateValid) {
       loadQuizData();
     } else {
       setUserPrefs(quizState.userPreferences || {});
       setIsLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, tutorialId, quizState]);
 
-  // Terapkan preferensi tema ke <html>
   useEffect(() => {
     if (userPrefs?.theme) {
       applyUserThemeToDocument(userPrefs);
     }
   }, [userPrefs]);
 
+  // --- handleAnswerSelect tetap sama ---
   const handleAnswerSelect = (questionId, optionId) => {
     if (isCurrentQuestionSubmitted || isLoading || !quizState) return;
 
     const currentAnswers = quizState.answers[questionId] || [];
     const isSelected = currentAnswers.includes(optionId);
+
     const newAnswers = isSelected
       ? currentAnswers.filter((id) => id !== optionId)
       : [...currentAnswers, optionId];
@@ -134,6 +158,7 @@ export default function QuizContainer() {
     });
   };
 
+  // --- NEXT / PREV / HINT / CHECK ANSWER / SCORE / RESET tetap sama ---
   const handleNext = withLoading(() => {
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
@@ -148,9 +173,7 @@ export default function QuizContainer() {
     }
   }, 300);
 
-  const handleShowHint = () => {
-    setIsHintVisible((prev) => !prev);
-  };
+  const handleShowHint = () => setIsHintVisible((prev) => !prev);
 
   const handleCheckAnswer = async () => {
     if (isCurrentQuestionSubmitted || isLoading || !currentQuestion) return;
@@ -161,7 +184,6 @@ export default function QuizContainer() {
     const isCorrect = checkSingleQuestion(currentQuestion, answers);
     const initialHint = currentQuestion.hint || null;
 
-    // update status & hint awal
     setQuizState((prev) => ({
       ...prev,
       checkedStatus: {
@@ -180,7 +202,6 @@ export default function QuizContainer() {
 
     setIsHintVisible(false);
 
-    // delay kecil untuk feedback UI
     await new Promise((r) => setTimeout(r, 300));
 
     if (isCorrect || initialHint) {
@@ -188,7 +209,6 @@ export default function QuizContainer() {
       return;
     }
 
-    // Kalau salah & belum ada hint, panggil AI
     try {
       const hint = await generateHintAI({
         tutorialId,
@@ -215,17 +235,20 @@ export default function QuizContainer() {
 
   const handleViewScore = withLoading(() => {
     const results = calculateScore(quizState);
+
     setQuizState({
       ...quizState,
       isCompleted: true,
       score: results.score,
       correctCount: results.correctCount,
     });
+
     setShowResults(true);
   }, 1000);
 
   const handleResetCurrentQuestion = withLoading(async () => {
     const qIndex = currentQuestionIndex;
+
     try {
       const newQuestionData = await resetSingleQuestion(
         tutorialId,
@@ -251,7 +274,7 @@ export default function QuizContainer() {
     } catch (err) {
       console.error("Failed regenerate question:", err);
       alert("Gagal mengambil soal baru.");
-      
+
       const newAnswers = { ...quizState.answers };
       const newCheckedStatus = { ...quizState.checkedStatus };
 
@@ -264,11 +287,13 @@ export default function QuizContainer() {
         checkedStatus: newCheckedStatus,
       });
     }
+
     setIsHintVisible(false);
   }, 700);
 
   const handleReset = withLoading(async () => {
     const currentTheme = userPrefs.theme;
+
     try {
       await resetAllQuestions(tutorialId, userId);
       await loadQuizData();
@@ -276,6 +301,7 @@ export default function QuizContainer() {
       console.error("Reset gagal:", err);
       alert("Gagal mereset soal.");
     }
+
     setCurrentQuestionIndex(0);
     setIsHintVisible(false);
     setShowResults(false);
@@ -296,13 +322,59 @@ export default function QuizContainer() {
     setIsWelcomeScreen(false);
   }, 800);
 
+  // ------------------------------------------------------------------------------------
+  // --- STYLE BUTTONS YANG DIPERKECIL (sesuai instruksi) ---
+  // ------------------------------------------------------------------------------------
+  const secondaryBtn = `
+    px-3 py-2 sm:px-5 sm:py-2.5 
+    rounded-lg font-medium 
+    text-xs sm:font-mini
+    border border-[var(--text-primary)] text-[var(--text-primary)]
+    hover:bg-[var(--bg-primary)]/10
+    disabled:opacity-50 disabled:cursor-not-allowed
+    transition-all duration-200
+    flex-1 sm:flex-none justify-center
+  `;
+
+  const primaryBtn = `
+    px-4 py-2 sm:px-6 sm:py-2.5 rounded-lg font-bold 
+    text-xs sm:font-mini
+    bg-[var(--blue-primary)] text-[var(--white-primary)]
+    hover:brightness-110 hover:shadow-lg
+    active:brightness-95
+    disabled:opacity-50 disabled:cursor-not-allowed
+    transition-all duration-200
+  `;
+
+  const resetBtn = `
+    px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg font-semibold 
+    text-xs sm:font-mini
+    border border-red-500
+    bg-red-500 text-[var(--white-primary)]
+    hover:brightness-110 hover:shadow-lg
+    active:brightness-95
+    flex items-center justify-center gap-1
+    disabled:opacity-50 disabled:cursor-not-allowed
+    transition-all duration-200
+  `;
+
+  const isDark = userPrefs.theme === "dark";
+  const logoSrc = isDark ? logoDark : logoLight;
+  const titleColor = isDark
+    ? "text-[var(--text-secondary)]"
+    : "text-[var(--blue-primary)]";
+
+  // ------------------------------------------------------------------------------------
+  // --- BADGE DIPERKECIL & DICENTERKAN ---
+  // ------------------------------------------------------------------------------------
   const renderStatusBadge = () => {
     if (!isCurrentQuestionSubmitted) return null;
+
     return (
       <div
         className={`
-          px-3 py-1.5 rounded-xl 
-          font-mini font-semibold border-1
+          inline-block px-3 py-1 rounded-lg 
+          text-[10px] sm:font-mini font-semibold border-1
           ${
             isCurrentQuestionCorrect
               ? "bg-[var(--green-secondary)] border-[var(--green-primary)] text-[var(--green-primary)]"
@@ -315,7 +387,7 @@ export default function QuizContainer() {
     );
   };
 
-  // Loading screen
+  // Loading screen tetap sama
   if (isLoading || !quizState || !currentQuestion) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[var(--bg-primary)]">
@@ -325,8 +397,6 @@ export default function QuizContainer() {
             border-4 border-[var(--text-primary)]/20 
             border-t-[var(--blue-primary)]
           "
-          role="status"
-          aria-label="loading"
         ></div>
         <p className="mt-4 font-body text-[var(--text-primary)]">
           Memuat Kuis...
@@ -335,7 +405,7 @@ export default function QuizContainer() {
     );
   }
 
-  // Halaman hasil
+  // Halaman hasil tetap sama
   if (showResults) {
     const finalScore = {
       correct: quizState.correctCount || 0,
@@ -352,7 +422,7 @@ export default function QuizContainer() {
     );
   }
 
-  // Halaman welcome
+  // Halaman welcome tetap sama
   if (isWelcomeScreen && userPrefs) {
     return (
       <WelcomeScreen
@@ -363,42 +433,7 @@ export default function QuizContainer() {
     );
   }
 
-  // Style tombol menggunakan CSS variables
-  const secondaryBtn = `
-    px-4 sm:px-5 py-2.5 rounded-lg font-medium 
-    font-mini
-    border border-[var(--text-primary)] text-[var(--text-primary)]
-    hover:bg-[var(--bg-primary)]/10
-    disabled:opacity-50 disabled:cursor-not-allowed
-    transition-all duration-200
-  `;
-  const primaryBtn = `
-    px-5 sm:px-6 py-2.5 rounded-lg font-bold 
-    font-mini
-    bg-[var(--blue-primary)] text-[var(--white-primary)]
-    hover:brightness-110 hover:shadow-lg
-    active:brightness-95
-    disabled:opacity-50 disabled:cursor-not-allowed
-    transition-all duration-200
-  `;
-  const resetBtn = `
-    px-4 sm:px-5 py-2.5 rounded-lg font-semibold 
-    font-mini
-    border border-red-500
-    bg-red-500 text-[var(--white-primary)]
-    hover:brightness-110 hover:shadow-lg
-    active:brightness-95
-    flex items-center gap-1
-    disabled:opacity-50 disabled:cursor-not-allowed
-    transition-all duration-200
-  `;
-
-  const isDark = userPrefs.theme === "dark";
-  const logoSrc = isDark ? logoDark : logoLight;
-  const titleColor = isDark
-    ? "text-[var(--text-secondary)]"
-    : "text-[var(--blue-primary)]";
-
+  // Tentukan MainActionButton (logic tetap sama)
   let MainActionButton;
   if (isCurrentQuestionSubmitted) {
     MainActionButton = (
@@ -432,58 +467,40 @@ export default function QuizContainer() {
     );
   }
 
+  // ------------------------------------------------------------------------------------
+  // --- RETURN (UI) YANG SUDAH DIUPDATE SESUAI TEMPLATE KEDUA ---
+  // ------------------------------------------------------------------------------------
   return (
-    <div
-      className="
-        min-h-screen w-full
-        flex items-center justify-center
-        bg-[var(--bg-primary)] text-[var(--text-primary)]
-        font-[var(--font-primary)]
-        transition-colors duration-300
-      "
-    >
-      {/* UPDATE FIX: Wrapper card diubah menjadi fluid dengan max-width */}
+    <div className="min-h-screen w-full flex items-center justify-center bg-[var(--bg-primary)] text-[var(--text-primary)] font-[var(--font-primary)] transition-colors duration-300">
       <div className="max-w-[var(--max-width-card)] w-full mx-auto px-4 sm:px-6">
-        <div
-          className="
-            lc-card
-            mx-auto
-            overflow-hidden
-            bg-[var(--bg-secondary)]
-            border border-[var(--text-primary)]/20
-            shadow-lg
-            transition-all duration-300
-          "
-        >
-          {/* HEADER */}
-          <div className="px-2 sm:px-2 py-2 mb-5">
-            {/* logo + brand + badge */}
-            <div className="lc-header grid grid-cols-1 sm:grid-cols-3 items-center">
-              <div className="flex items-center gap-2 header-left">
-                <img
-                  src={logoSrc}
-                  alt="LearnCheck Logo"
-                  className="w-12 h-12 sm:w-16 sm:h-16"
-                />
-                <div className="leading-tight">
-                  <span className={`block font-subtitle sm:text-2xl font-bold ${titleColor}`}>
+        <div className="lc-card mx-auto overflow-hidden bg-[var(--bg-secondary)] border border-[var(--text-primary)]/20 shadow-lg transition-all duration-300">
+          
+          {/* HEADER UPDATED */}
+          <div className="px-2 sm:px-2 py-2 mb-2 sm:mb-5">
+            <div className="lc-header grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-0">
+              
+              {/* LEFT: Logo */}
+              <div className="flex items-center justify-center sm:justify-start gap-2 header-left">
+                <img src={logoSrc} alt="LearnCheck Logo" className="w-10 h-10 sm:w-16 sm:h-16" />
+                <div className="leading-tight text-left">
+                  <span className={`block font-subtitle text-lg sm:text-2xl font-bold ${titleColor}`}>
                     LearnCheck!
                   </span>
-                  <span className={`block font-mini ${titleColor}`}>
-                    Formative Assessment <br />
-                    Powered with AI
+                  <span className={`block text-[10px] sm:font-mini ${titleColor}`}>
+                    Formative Assessment <br /> Powered with AI
                   </span>
                 </div>
               </div>
 
-              {/* judul submodul */}
-              <div className="header-title items-center">
-                <p className="font-body font-medium text-[var(--text-primary)]/80 text-left sm:text-center">
+              {/* MIDDLE: Module Title */}
+              <div className="header-title flex justify-center items-center my-1 sm:my-0">
+                <p className="font-body text-sm sm:text-base font-medium text-[var(--text-primary)]/80 text-center">
                   {quizState.moduleTitle}
                 </p>
               </div>
 
-              <div className="flex justify-start sm:justify-end pr-3 header-status">
+              {/* RIGHT: Badge */}
+              <div className="flex justify-center sm:justify-end pr-0 sm:pr-3 header-status">
                 {renderStatusBadge()}
               </div>
             </div>
@@ -491,18 +508,16 @@ export default function QuizContainer() {
 
           <div className="w-full h-px bg-gradient-to-r from-transparent via-[var(--text-primary)]/20 to-transparent"></div>
 
-          {/* PROGRESS BAR - Sekarang di dalam header wrapper */}
-          <div className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2 mt-2">
-            <p className="font-mini font-medium text-[var(--text-secondary)] opacity-70">
+          {/* PROGRESS BAR */}
+          <div className="px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-0 mt-0">
+            <p className="font-mini font-medium text-[var(--text-secondary)] opacity-70 text-center sm:text-left">
               Soal {currentQuestionIndex + 1} dari {totalQuestions}
             </p>
             <div className="flex-1 sm:max-w-xs ml-0 sm:ml-auto bg-[var(--text-primary)]/10 rounded-full h-2">
               <div
                 className="bg-[var(--blue-primary)] h-2 rounded-full transition-all duration-300"
                 style={{
-                  width: `${
-                    ((currentQuestionIndex + 1) / totalQuestions) * 100
-                  }%`,
+                  width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`,
                 }}
               />
             </div>
@@ -526,87 +541,66 @@ export default function QuizContainer() {
             />
           </div>
 
-          {/* FOOTER ACTIONS */}
+          {/* FOOTER */}
           <div className="p-4 sm:p-5">
             <div className="footer-actions">
-              {/* LEFT: Hint & Score */}
+
+              {/* LEFT */}
               <div className="footer-secondary">
+                
+                {/* Hint Button */}
                 <button
                   onClick={handleShowHint}
                   className="
-                    w-full sm:w-auto 
-                    px-4 sm:px-5 py-2.5 
+                    w-full sm:w-auto px-3 py-2 sm:px-5 sm:py-2.5 
                     bg-[var(--hint-button-yellow)]
                     text-[var(--text-light-primary)] rounded-lg font-semibold
-                    font-mini
+                    text-xs sm:font-mini
                     flex items-center justify-center gap-1
                     hover:brightness-110 hover:shadow-lg
-                    active:brightness-95
-                    disabled:opacity-50 disabled:cursor-not-allowed
-                    transition-all duration-200
                     border border-[var(--hint-button-yellow)]
                   "
                   disabled={!currentQuestion.pre_hint || isLoading}
                 >
-                  <img
-                    src={hintLogoButton}
-                    alt="Hint Logo"
-                    className="w-4 h-4"
-                  />
+                  <img src={hintLogoButton} alt="Hint Logo" className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>Petunjuk</span>
                 </button>
 
-                {/* MainActionButton untuk mediumWidth (baris 2) */}
-                <div className="main-action-mediumwidth">
-                  {MainActionButton}
-                </div>
+                <div className="main-action-mediumwidth">{MainActionButton}</div>
 
                 {isLastQuestion && isAllQuestionsChecked && (
-                  <button
-                    onClick={handleViewScore}
-                    className="
-                      w-full sm:w-auto 
-                      px-5 sm:px-6 py-2.5 
-                      bg-[var(--blue-primary)] text-[var(--white-primary)] font-bold
-                      rounded-lg shadow-md
-                      font-mini
-                      hover:brightness-110 hover:shadow-lg
-                      active:brightness-95 active:scale-[0.98]
-                      disabled:opacity-50 disabled:cursor-not-allowed
-                      transition-all duration-200
-                      border border-[var(--blue-primary)]
-                    "
-                    disabled={isLoading}
-                  >
+                  <button onClick={handleViewScore} className={primaryBtn} disabled={isLoading}>
                     Lihat Skor
                   </button>
                 )}
               </div>
 
-              {/* RIGHT: Navigation & Main Action */}
+              {/* RIGHT - NAVIGATION BUTTONS */}
               <div className="footer-navigation">
                 <button
                   onClick={handlePrev}
                   disabled={isFirstQuestion || isLoading}
                   className={secondaryBtn}
                 >
-                  &lt; Sebelumnya
+                  &lt; Prev
                 </button>
+
                 <button
                   onClick={handleNext}
                   disabled={isLastQuestion || isLoading}
                   className={secondaryBtn}
                 >
-                  Selanjutnya &gt;
+                  Next &gt;
                 </button>
 
-                {/* MainActionButton untuk fullWidth (pojok kanan) */}
                 <div className="main-action-fullwidth">
                   {MainActionButton}
                 </div>
               </div>
+
             </div>
           </div>
+
         </div>
       </div>
     </div>
