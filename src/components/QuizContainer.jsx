@@ -307,38 +307,47 @@ export default function QuizContainer() {
   // --- STYLE BUTTONS YANG DIPERKECIL (sesuai instruksi) ---
   // ------------------------------------------------------------------------------------
   const secondaryBtn = `
-    px-3 py-2 sm:px-5 sm:py-2.5 
+    flex-1 sm:flex-none
+    justify-center items-center
+    px-3 py-2 sm:px-3 sm:py-2 
     rounded-lg font-medium 
-    text-xs sm:font-mini
+    text-[11px] sm:text-xs
     border border-[var(--text-primary)] text-[var(--text-primary)]
     hover:bg-[var(--bg-primary)]/10
     disabled:opacity-50 disabled:cursor-not-allowed
     transition-all duration-200
-    flex-1 sm:flex-none justify-center
+    whitespace-nowrap
   `;
-
+  
   const primaryBtn = `
-    px-4 py-2 sm:px-6 sm:py-2.5 rounded-lg font-bold 
-    text-xs sm:font-mini
+    flex-1 sm:flex-none
+    justify-center items-center
+    px-3 py-2 sm:px-4 sm:py-2 
+    rounded-lg font-bold 
+    text-[11px] sm:text-xs
     bg-[var(--blue-primary)] text-[var(--white-primary)]
     hover:brightness-110 hover:shadow-lg
     active:brightness-95
     disabled:opacity-50 disabled:cursor-not-allowed
     transition-all duration-200
+    whitespace-nowrap
   `;
-
+  
   const resetBtn = `
-    px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg font-semibold 
-    text-xs sm:font-mini
+    flex-1 sm:flex-none
+    justify-center items-center
+    px-3 py-2 sm:px-3 sm:py-2 
+    rounded-lg font-semibold 
+    text-[11px] sm:text-xs
     border border-red-500
     bg-red-500 text-[var(--white-primary)]
     hover:brightness-110 hover:shadow-lg
     active:brightness-95
-    flex items-center justify-center gap-1
+    flex gap-1
     disabled:opacity-50 disabled:cursor-not-allowed
     transition-all duration-200
+    whitespace-nowrap
   `;
-
   const isDark = userPrefs.theme === "dark";
   const logoSrc = isDark ? logoDark : logoLight;
   const titleColor = isDark
