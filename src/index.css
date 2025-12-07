@@ -267,11 +267,10 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
 }
 
 /* ===========================
-   FOOTER RESPONSIVE (FIXED & POLISHED)
+   FOOTER RESPONSIVE (FINAL FIX)
    =========================== */
 
-/* 1. BASE LAYOUT (MOBILE DEFAULT) 
-   Layout dasar untuk HP: Stack Vertikal, Tombol Lebar Penuh */
+/* 1. BASE LAYOUT (MOBILE DEFAULT) */
 .footer-actions {
   display: flex;
   flex-direction: column;
@@ -279,28 +278,29 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   width: 100%;
 }
 
+/* GROUP 1: Navigasi (Prev/Next) - Posisi ATAS */
 .footer-navigation {
   display: flex;
   order: 1; 
   width: 100%;
-  gap: 0.5rem; /* Gap diperkecil sedikit agar muat */
+  gap: 0.5rem;
 }
 
-/* Tombol di Mobile Navigasi berbagi lebar 50:50 */
 .footer-navigation > button {
   flex: 1; 
-  /* Pastikan text tidak wrap jika terlalu panjang */
   white-space: nowrap; 
   overflow: hidden;
   text-overflow: ellipsis;
-}flex: 1; /* Tombol membagi ruang 50:50 */
+}
+
+/* --- FIX: Hapus tombol duplicate di Mobile --- */
+/* Kita sembunyikan tombol action versi desktop di tampilan mobile */
+.main-action-fullwidth {
+  display: none !important; 
+}
 
 
-/* Sembunyikan tombol versi desktop di mobile */
-.main-action-fullwidth { display: none; }
-
-
-/* GROUP 2: Secondary (Petunjuk & Tombol Utama/Periksa) - Taruh di BAWAH */
+/* GROUP 2: Secondary (Hint & Action Mobile) - Posisi BAWAH */
 .footer-secondary {
   display: flex;
   order: 2; 
@@ -308,25 +308,24 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   gap: 0.75rem;
 }
 
-/* Tombol Hint */
 .footer-secondary > button {
   flex: 1;
 }
 
-/* Wrapper Tombol Utama (Periksa/Ulang) untuk Mobile/Medium */
+/* Tombol Utama (Ulang/Periksa) versi Mobile */
 .main-action-mediumwidth {
-  display: block; /* PENTING: Jangan di-hide di mobile! */
+  display: block; 
   flex: 1;
 }
 .main-action-mediumwidth > button {
-  width: 100%; /* Tombol mengisi penuh wrapper-nya */
+  width: 100%; 
 }
 
 
 /* 2. TABLET & DESKTOP (Layar > 640px) */
 @media (min-width: 640px) {
   
-  /* Reset ukuran tombol agar tidak terlalu lebar di layar besar */
+  /* Reset ukuran tombol */
   .footer-navigation, 
   .footer-secondary {
     width: auto;
@@ -334,13 +333,13 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   .footer-navigation > button,
   .footer-secondary > button,
   .main-action-mediumwidth {
-    flex: none; /* Ukuran mengikuti konten teks */
+    flex: none; 
   }
   .main-action-mediumwidth > button {
     width: auto;
   }
 
-  /* --- LOGIKA FULL WIDTH (Layout Horizontal Panjang) --- */
+  /* --- LOGIKA FULL WIDTH (Layout Memanjang) --- */
   html[data-width="fullWidth"] .footer-actions {
     flex-direction: row;
     align-items: center;
@@ -348,17 +347,17 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
   }
   
   html[data-width="fullWidth"] .footer-secondary {
-    order: 1; /* Kiri: Hint */
+    order: 1; 
     justify-content: flex-start;
   }
   
   html[data-width="fullWidth"] .footer-navigation {
-    order: 2; /* Kanan: Navigasi & Action */
+    order: 2; 
     justify-content: flex-end;
   }
 
-  /* Switch tombol utama ke versi fullwidth */
-  html[data-width="fullWidth"] .main-action-fullwidth { display: block; }
+  /* Tampilkan tombol versi desktop HANYA jika mode FullWidth di layar besar */
+  html[data-width="fullWidth"] .main-action-fullwidth { display: block !important; }
   html[data-width="fullWidth"] .main-action-mediumwidth { display: none; }
 
 
@@ -382,7 +381,6 @@ html[data-width="mediumWidth"] .lc-header > :nth-child(3) {
     justify-content: center;
   }
 
-  /* Switch tombol utama ke versi mediumwidth */
   html[data-width="mediumWidth"] .main-action-mediumwidth { display: block; }
-  html[data-width="mediumWidth"] .main-action-fullwidth { display: none; }
+  html[data-width="mediumWidth"] .main-action-fullwidth { display: none !important; }
 }
